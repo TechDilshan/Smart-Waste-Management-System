@@ -13,7 +13,7 @@ const CustomerManagement = () => {
 
   // Function to navigate to the Create Driver page
   const handleCreateDriver = () => {
-    navigate('/create-driver');  // Route for the create driver page
+    navigate('/RegisterDriver');  // Route for the create driver page
   };
 
   return (
