@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import QRCode from 'react-qr-code';
+import Sidebar from './Sidebar';
 
 const RegisterDustbin = () => {
   const [dustbinData, setDustbinData] = useState({ location: '', capacity: '', areaCode: '' });
@@ -33,14 +34,18 @@ const RegisterDustbin = () => {
       console.error('Error submitting form:', error);
     }
   };
-
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
+    {/* Sidebar */}
+    <Sidebar />
       <h1>Register Smart Dustbin</h1>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="location" placeholder="Location" onChange={handleInputChange} required />
-        <input type="text" name="capacity" placeholder="Capacity" onChange={handleInputChange} required />
-        <input type="text" name="areaCode" placeholder="Area Code" onChange={handleInputChange} required />
+        <input type="text" name="email" placeholder="email" onChange={handleInputChange} required />
+        <input type="text" name="location" placeholder="location" onChange={handleInputChange} required />
+        <input type="text" name="name" placeholder="name" onChange={handleInputChange} required />
+        <input type="text" name="phone" placeholder="phone" onChange={handleInputChange} required />
+        <input type="text" name="NIC" placeholder="NIC" onChange={handleInputChange} required />
+        <input type="text" name="Password" placeholder="Password" onChange={handleInputChange} required />
         <button type="submit">Submit</button>
       </form>
 

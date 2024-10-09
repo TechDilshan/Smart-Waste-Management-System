@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors'); // Import cors
 const dustbinRoutes = require('./routes/dustbinRoutes');
+const customerRoutes = require('./routes/customerRoutes');
 
 const app = express();
 
@@ -10,7 +11,7 @@ app.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.json()); // To parse incoming JSON requests
 
 // Routes
-app.use('/api/dustbins', dustbinRoutes); // All dustbin routes
+app.use('/api/dustbins', dustbinRoutes,customerRoutes); // All dustbin routes
 
 // Start the server
 const PORT = process.env.PORT || 3001;
