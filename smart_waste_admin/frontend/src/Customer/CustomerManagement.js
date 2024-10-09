@@ -63,8 +63,10 @@ const CustomerManagement = () => {
       date: currentDate
     };
 
+    console.log(selectedOrder)
+
     try {
-      const response = await fetch('http://localhost:3001/api/orders/select-driver', {
+      const response = await fetch('http://localhost:3001/api/dustbins/set-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

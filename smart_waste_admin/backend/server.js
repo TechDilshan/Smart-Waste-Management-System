@@ -5,6 +5,7 @@ const dustbinRoutes = require('./routes/dustbinRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const driverRoutes = require('./routes/driverRoutes');
+const setOrderRoutes = require('./routes/setOrderRoutes');
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.json()); // To parse incoming JSON requests
 
 // Routes
-app.use('/api/dustbins', dustbinRoutes,customerRoutes, orderRoutes,driverRoutes); // All dustbin routes
+app.use('/api/dustbins', dustbinRoutes,customerRoutes, orderRoutes,driverRoutes, setOrderRoutes); // All dustbin routes
 
 // Start the server
 const PORT = process.env.PORT || 3001;

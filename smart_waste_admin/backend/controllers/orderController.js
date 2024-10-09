@@ -18,3 +18,24 @@ exports.getOrderDetails = async (req, res) => {
     res.status(500).json({ message: 'Error fetching order details', error });
   }
 };
+
+exports.getAllOrderDetails = async (req, res) => {
+    try {
+        // Fetch all Driver details from Firestore
+        const orderSnapshot = await db.collection('orders').get();
+    
+        if (orderSnapshot.empty) {
+          return res.status(404).json({ message: 'No Orders found' });
+        }
+    
+        // Map through the snapshot and collect the data for all drivers
+        const ordersData = orderSnapshot.docs.map(doc => ({
+          id: doc.id,  // Include the document ID for reference
+          ...doc.data()  // Spread the document data
+        }));
+    
+        res.status(200).json({ orders: ordersData });
+      } catch (error) {
+        res.status(500).json({ message: 'Error fetching driver details', error });
+      }
+  };
