@@ -9,6 +9,7 @@ import RegisterDustbin from './Customer/RegisterDustbin';
 import CustomerManagement from './Customer/CustomerManagement';
 import MainDashboard from './Dashboard/MainDashboard';
 import RegisterDriver from './Driver/RegisterDriver';
+import DriverManagement from './Driver/DriverManagement';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,6 +20,7 @@ root.render(
         <Route path='/CustomerManagement' element={<CustomerManagement />} />
         <Route path='/MainDashboard' element={<MainDashboard />} />
         <Route path='/RegisterDriver' element={<RegisterDriver />} />
+        <Route path='/DriverManagement' element={<DriverManagement />} />
     </Routes>
   </BrowserRouter>
 );

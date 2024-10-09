@@ -17,7 +17,7 @@ const Sidebar = () => {
           <Link to="/truck" style={{ color: '#fff', textDecoration: 'none' }}>Truck</Link>
         </li>
         <li>
-          <Link to="/driver" style={{ color: '#fff', textDecoration: 'none' }}>Driver</Link>
+          <Link to="/DriverManagement" style={{ color: '#fff', textDecoration: 'none' }}>Driver</Link>
         </li>
       </ul>
     </div>
