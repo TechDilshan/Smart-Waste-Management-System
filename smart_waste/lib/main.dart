@@ -1,39 +1,32 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'QRScannerPage.dart';
+import 'package:flutter/material.dart';
+import 'customer/CustomerHome.dart';
 
-void main() {
+void main() async {
+  // Ensures that Flutter is fully initialized before doing any work.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase and catch any errors that occur during the process.
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    // Print any Firebase initialization errors to the console for debugging.
+    print("Error initializing Firebase: $e");
+  }
+
+  // Once Firebase is initialized, run the app.
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      // Initialize Firebase
-      future: Firebase.initializeApp(),
-      builder: (context, snapshot) {
-        // Check if the future is done (Firebase initialized)
-        if (snapshot.connectionState == ConnectionState.done) {
-          // Firebase is initialized, show the app
-          return MaterialApp(
-            title: 'Smart Waste Driver App',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: QRScannerPage(),
-          );
-        }
-        // If the initialization is still ongoing, show a loading indicator
-        return MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(), // Loading indicator
-            ),
-          ),
-        );
-      },
+    return MaterialApp(
+      title: 'Smart Waste Management',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: CustomerHome(), // Make sure CustomerHome.dart is correctly set up
     );
   }
 }
