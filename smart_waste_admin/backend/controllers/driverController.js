@@ -50,4 +50,26 @@ exports.getDriverDetails = async (req, res) => {
       res.status(500).json({ message: 'Error fetching driver details', error });
     }
   };
+
+  exports.getAllDriverDetails = async (req, res) => {
+    try {
+      // Fetch all Driver details from Firestore
+      const driverSnapshot = await db.collection('driver').get();
+  
+      if (driverSnapshot.empty) {
+        return res.status(404).json({ message: 'No drivers found' });
+      }
+  
+      // Map through the snapshot and collect the data for all drivers
+      const driverData = driverSnapshot.docs.map(doc => ({
+        id: doc.id,  // Include the document ID for reference
+        ...doc.data()  // Spread the document data
+      }));
+  
+      res.status(200).json({ drivers: driverData });
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching driver details', error });
+    }
+  };
+  
   
