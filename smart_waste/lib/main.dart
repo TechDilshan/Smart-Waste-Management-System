@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'customer/CustomerHome.dart';
+import 'login.dart';
 
 void main() async {
   // Ensures that Flutter is fully initialized before doing any work.
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: CustomerHome(), // Make sure CustomerHome.dart is correctly set up
+      home: LoginScreen(), // Make sure CustomerHome.dart is correctly set up
     );
   }
 }
