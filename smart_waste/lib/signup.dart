@@ -210,37 +210,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final name = _nameController.text.trim();
-    final phone = _phoneController.text.trim();
-    final location = _locationController.text.trim();
+  final email = _emailController.text.trim();
+  final password = _passwordController.text.trim();
+  final name = _nameController.text.trim();
+  final phone = _phoneController.text.trim();
+  final location = _locationController.text.trim();
 
-    try {
-      // Create user with email and password
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  try {
+    // Create user with email and password
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      // Save additional user information to Firestore
-      await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
-        'name': name,
-        'phone': phone,
-        'location': location,
-        'email': email,
-      });
+    // Save additional user information to Firestore
+    await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
+      'name': name,
+      'phone': phone,
+      'location': location,
+      'email': email,
+      'myPoints': 0,  // Initialize myPoints with zero
+      'noItems': 0,    // Initialize noItems with zero
+    });
 
-      // Navigate to login screen or home screen after successful sign-up
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    } catch (e) {
-      // Show error message if sign-up fails
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sign Up Failed: ${e.toString()}')),
-      );
-    }
+    // Navigate to login screen or home screen after successful sign-up
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  } catch (e) {
+    // Show error message if sign-up fails
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Sign Up Failed: ${e.toString()}')),
+    );
   }
+}
 }

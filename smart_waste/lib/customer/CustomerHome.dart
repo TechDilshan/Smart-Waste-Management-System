@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'RequestPage.dart'; // Import the request page
 import 'PaymentPage.dart'; // Import the payment page
@@ -9,19 +10,41 @@ class CustomerHome extends StatefulWidget {
 }
 
 class _CustomerHomeState extends State<CustomerHome> {
-  // Controller for email input
-  final TextEditingController _emailController = TextEditingController();
   String _email = "";
   String _myPoints = "0";
   String _noItems = "0";
   bool _isLoading = false;
   bool _dataFound = false;
 
-  // Function to fetch customer data based on the email entered
+  @override
+  void initState() {
+    super.initState();
+    _fetchLoggedInUserEmail(); // Fetch the logged-in user's email when the screen initializes
+  }
+
+  // Function to fetch logged-in user's email
+  void _fetchLoggedInUserEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      setState(() {
+        _email = user.email ?? ""; // Set the logged-in email
+      });
+      _fetchCustomerData(); // Fetch customer data using the logged-in email
+    } else {
+      // Handle the case when no user is logged in
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('No user is logged in.'),
+        duration: Duration(seconds: 2),
+      ));
+    }
+  }
+
+  // Function to fetch customer data based on the logged-in email
   void _fetchCustomerData() async {
     if (_email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please enter an email address.'),
+        content: Text('No email found for the logged-in user.'),
         duration: Duration(seconds: 2),
       ));
       return;
@@ -33,9 +56,9 @@ class _CustomerHomeState extends State<CustomerHome> {
     });
 
     try {
-      // Fetch customer data from Firestore where email matches
+      // Fetch customer data from Firestore where email matches the logged-in email
       var customerSnapshot = await FirebaseFirestore.instance
-          .collection('customer')
+          .collection('users')
           .where('email', isEqualTo: _email)
           .limit(1)
           .get();
@@ -84,28 +107,12 @@ class _CustomerHomeState extends State<CustomerHome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Email input field
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Enter your Email',
-                border: OutlineInputBorder(),
+            // Display the logged-in user's email
+            if (_email.isNotEmpty)
+              Text(
+                'Logged in as: $_email',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              onChanged: (value) {
-                setState(() {
-                  _email = value;
-                });
-              },
-            ),
-            SizedBox(height: 20),
-
-            // Button to fetch customer data
-            ElevatedButton(
-              onPressed: _fetchCustomerData,
-              child: _isLoading
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Fetch Data'),
-            ),
             SizedBox(height: 20),
 
             // Display customer data if email is valid
