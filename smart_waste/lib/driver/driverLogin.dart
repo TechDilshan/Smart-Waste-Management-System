@@ -1,22 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'signup.dart'; // Import the signup screen
-import './customer/CustomerHome.dart'; // Import the home screen
-import 'driver/driverLogin.dart';
+import '../signup.dart'; // Import the signup screen
+import 'DriverHome.dart';
+import '../login.dart'; // Import the user login screen
 
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class DriverLoginScreen extends StatefulWidget {
+  const DriverLoginScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoginScreenState createState() => _LoginScreenState();
+  _DriverLoginScreenState createState() => _DriverLoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _DriverLoginScreenState extends State<DriverLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _isPasswordVisible = false;
   String? _errorMessage;
 
@@ -36,30 +34,39 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      // Query Firestore to find admin with matching email
+      QuerySnapshot adminSnapshot = await _firestore
+          .collection('driver')
+          .where('email', isEqualTo: email)
+          .limit(1) // Limit to one document
+          .get();
+
+      if (adminSnapshot.docs.isEmpty) {
+        setState(() {
+          _errorMessage = 'No admin found with this email.';
+        });
+        return;
+      }
+
+      // Check if the password matches
+      var adminData = adminSnapshot.docs.first.data() as Map<String, dynamic>;
+      if (adminData['Password'] != password) {
+        setState(() {
+          _errorMessage = 'Incorrect password.';
+        });
+        return;
+      }
 
       // Navigate to the next screen after successful login
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => CustomerHome()), // Replace with your home screen
+        MaterialPageRoute(builder: (context) => const DriverHome()),
       );
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        if (e.code == 'user-not-found') {
-          _errorMessage = 'No user found for that email.';
-        } else if (e.code == 'wrong-password') {
-          _errorMessage = 'Wrong password provided for that user.';
-        } else {
-          _errorMessage = 'An error occurred. Please try again.';
-        }
-      });
     } catch (e) {
       setState(() {
-        _errorMessage = 'An unexpected error occurred. Please try again.';
+        _errorMessage = 'An error occurred. Please try again.';
       });
+      print('Error: $e'); // Log the error for debugging
     }
   }
 
@@ -92,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Login Container
                 Container(
                   padding: const EdgeInsets.all(20),
-                  margin: const EdgeInsets.symmetric(horizontal: 20), // Add left and right margin
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(15),
@@ -200,27 +207,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           child: const Text(
-                            "",
+                            "Don't have an account? Sign Up",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-
                       Center(
                         child: TextButton(
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => const DriverLoginScreen()),
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
                             );
                           },
                           child: const Text(
-                            "Are you admin? Login",
+                            "Are you User? Login",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'MyOrders.dart'; // Import MyOrders.dart
+import 'QRScannerPage.dart'; // Import QRScannerPage.dart
 
 class DriverHome extends StatelessWidget {
   const DriverHome({super.key});
@@ -8,7 +10,7 @@ class DriverHome extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Driver Home'),
-        backgroundColor: Colors.deepPurple, // You can customize the app bar color
+        backgroundColor: Colors.deepPurple, // Customize the app bar color
       ),
       body: Center(
         child: Column(
@@ -22,41 +24,54 @@ class DriverHome extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Add additional buttons or content here as needed for the driver dashboard
-            ElevatedButton(
-              onPressed: () {
-                // Add your functionality here, such as navigating to another screen
+            
+            // My Orders Box
+            InkWell(
+              onTap: () {
+                // Navigate to MyOrders page
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrdersPage()));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple, // Customize button color
-                shape: RoundedRectangleBorder(
+              child: Container(
+                width: 200,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple,
                   borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-              child: const Text(
-                'Driver Options',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
+                child: const Center(
+                  child: Text(
+                    'My Orders',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Example functionality, you can add more actions as needed
+            
+            // Scan QR Code Box
+            InkWell(
+              onTap: () {
+                // Navigate to QRScannerPage
+                Navigator.push(context, MaterialPageRoute(builder: (context) => QRScannerPage()));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple, // Customize button color
-                shape: RoundedRectangleBorder(
+              child: Container(
+                width: 200,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple,
                   borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-              child: const Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
+                child: const Center(
+                  child: Text(
+                    'Scan QR Code',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
