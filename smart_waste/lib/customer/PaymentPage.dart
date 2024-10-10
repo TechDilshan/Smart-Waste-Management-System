@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -17,10 +18,15 @@ class _PaymentPageState extends State<PaymentPage> {
     if (_priceController.text.isNotEmpty &&
         _dateController.text.isNotEmpty &&
         _summaryController.text.isNotEmpty) {
+      // Get the logged-in user's email
+      String userEmail = FirebaseAuth.instance.currentUser!.email!;
+
+      // Add payment details to Firestore
       await FirebaseFirestore.instance.collection('payments').add({
         'price': _priceController.text,
         'date': _dateController.text,
         'summary': _summaryController.text,
+        'userEmail': userEmail,  // Store the user's email with the payment
         'timestamp': FieldValue.serverTimestamp(), // Add timestamp for ordering
       });
 
@@ -44,6 +50,9 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the logged-in user's email
+    String userEmail = FirebaseAuth.instance.currentUser!.email!;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Payment Details'),
@@ -86,10 +95,14 @@ class _PaymentPageState extends State<PaymentPage> {
               ],
             ),
           ),
-          // Payment details list from Firebase
+          // Payment details list from Firebase (filtered by email)
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('payments').orderBy('timestamp', descending: true).snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('payments')
+                  .where('userEmail', isEqualTo: userEmail)  // Filter by user's email
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
