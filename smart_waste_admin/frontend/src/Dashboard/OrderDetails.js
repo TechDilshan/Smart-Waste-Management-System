@@ -113,20 +113,8 @@ const CustomerManagement = () => {
       <div style={{ padding: '20px', flexGrow: 1 }}>
         <h1>Dashboard</h1>
 
-        {/* Create Dustbin Box */}
-        <div style={styles.box} onClick={handleCreateDustbin}>
-          <h2>Create Dustbin</h2>
-          <p>Create a new dustbin for the system</p>
-        </div>
-
-        {/* Create Driver Box */}
-        <div style={styles.box} onClick={handleCreateDriver}>
-          <h2>Create Driver</h2>
-          <p>Create a new driver for the system</p>
-        </div>
-
         {/* Orders Grid Section */}
-        {/* <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
           <h2>Customer Orders</h2>
           {loading ? (
             <p>Loading orders...</p>
@@ -151,7 +139,7 @@ const CustomerManagement = () => {
               )}
             </div>
           )}
-        </div> */}
+        </div>
       </div>
 
       {/* Modal for Driver Selection */}

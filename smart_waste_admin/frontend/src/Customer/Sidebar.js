@@ -11,6 +11,9 @@ const Sidebar = () => {
           <Link to="/MainDashboard" style={{ color: '#fff', textDecoration: 'none' }}>Dashboard</Link>
         </li>
         <li>
+          <Link to="/Orders" style={{ color: '#fff', textDecoration: 'none' }}>Orders</Link>
+        </li>
+        <li>
           <Link to="/CustomerManagement" style={{ color: '#fff', textDecoration: 'none' }}>Bins</Link>
         </li>
         <li>
