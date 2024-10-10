@@ -3,7 +3,9 @@ import 'MyOrders.dart'; // Import MyOrders.dart
 import 'QRScannerPage.dart'; // Import QRScannerPage.dart
 
 class DriverHome extends StatelessWidget {
-  const DriverHome({super.key});
+  final String driverEmail; // Pass email to the home page
+
+  const DriverHome({super.key, required this.driverEmail});
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +18,24 @@ class DriverHome extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Welcome to the Driver Dashboard!',
-              style: TextStyle(
+            Text(
+              'Welcome, $driverEmail!', // Display driver email
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 20),
-            
             // My Orders Box
             InkWell(
               onTap: () {
                 // Navigate to MyOrders page
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrdersPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyOrdersPage(driverEmail: driverEmail),
+                  ),
+                );
               },
               child: Container(
                 width: 200,
@@ -50,12 +56,16 @@ class DriverHome extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            
             // Scan QR Code Box
             InkWell(
               onTap: () {
                 // Navigate to QRScannerPage
-                Navigator.push(context, MaterialPageRoute(builder: (context) => QRScannerPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QRScannerPage(),
+                  ),
+                );
               },
               child: Container(
                 width: 200,
