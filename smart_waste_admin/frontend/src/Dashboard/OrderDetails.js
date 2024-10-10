@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // For navigation in react-router-dom v6
 import Modal from 'react-modal'; // For the modal
 import Sidebar from '../Customer/Sidebar';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'; // Import leaflet components
+import L from 'leaflet'; // Import leaflet for handling custom marker
+
+// Ensure Leaflet CSS is imported
+import 'leaflet/dist/leaflet.css';
 
 const CustomerManagement = () => {
   const navigate = useNavigate();  // Hook for navigation
@@ -80,8 +85,6 @@ const CustomerManagement = () => {
       date: Date(),
     };
 
-
-    console.log(orderUpdate);
     try {
       const response = await fetch('http://localhost:3001/api/dustbins/set-order', {
         method: 'POST',
@@ -96,7 +99,6 @@ const CustomerManagement = () => {
         setIsModalOpen(false);
         setSelectedOrder(null);
         setSelectedDriver(null);
-        // Optionally refetch orders after assigning driver
       } else {
         console.error('Failed to assign driver');
       }
@@ -125,13 +127,41 @@ const CustomerManagement = () => {
                   <div key={order.id} style={styles.orderCard}>
                     <h3>Customer Name: {order.name}</h3>
                     <p><strong>Customer Email:</strong> {order.email}</p>
-                    <p><strong>Location:</strong> {order.location}</p>
+                    <p><strong>Location:</strong> {order.location ? `${order.location.latitude}, ${order.location.longitude}` : 'No location available'}</p>
                     <p><strong>Recycle Waste %:</strong> {order.recycleWastePercentage}</p>
                     <p><strong>Organic Waste %:</strong> {order.organicWastePercentage}</p>
                     <p><strong>General Waste %:</strong> {order.generalWastePercentage}</p>
 
                     <p><strong>Date:</strong> {new Date(order.date).toLocaleString()}</p>
                     <button onClick={() => openSelectDriverModal(order)}>Select Driver</button>
+
+                    {/* Display Map for Location */}
+                    {order.location ? (
+                      <MapContainer
+                        center={[order.location.latitude, order.location.longitude]}
+                        zoom={13}
+                        style={{ width: '100%', height: '300px', borderRadius: '10px', marginTop: '20px' }}
+                      >
+                        <TileLayer
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        />
+                        {/* Custom Red Marker */}
+                        <Marker
+                          position={[order.location.latitude, order.location.longitude]}
+                          icon={L.icon({
+                            iconUrl: 'https://static.vecteezy.com/system/resources/thumbnails/014/110/938/small_2x/red-pin-for-pointing-the-destination-on-the-map-3d-illustration-png.png', // Red marker URL
+                            iconSize: [25, 41], // Size of the icon
+                            iconAnchor: [12, 41], // Anchor point (middle of the bottom)
+                            popupAnchor: [1, -34], // Position of the popup relative to the icon
+                          })}
+                        >
+                          <Popup>{order.name} is located here.</Popup>
+                        </Marker>
+                      </MapContainer>
+                    ) : (
+                      <p>Location not available on map</p>
+                    )}
                   </div>
                 ))
               ) : (
