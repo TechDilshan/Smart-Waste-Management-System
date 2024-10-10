@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RequestPage extends StatefulWidget {
   @override
@@ -16,29 +17,38 @@ class _RequestPageState extends State<RequestPage> {
 
   // Function to save the form data to Firebase
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        await FirebaseFirestore.instance.collection('orders').add({
-          'name': _nameController.text,
-          'location': _locationController.text,
-          'recycleWastePercentage': double.parse(_recycleWasteController.text),
-          'organicWastePercentage': double.parse(_organicWasteController.text),
-          'generalWastePercentage': double.parse(_generalWasteController.text),
-          'timestamp': FieldValue.serverTimestamp(),
-        });
+  if (_formKey.currentState!.validate()) {
+    try {
+      // Get the logged-in user's email
+      String? userEmail = FirebaseAuth.instance.currentUser?.email;
 
-        // Show success message and navigate back
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Request submitted successfully!')),
-        );
-        Navigator.pop(context);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to submit request: $e')),
-        );
+      if (userEmail == null) {
+        throw Exception('User is not logged in');
       }
+
+      // Add form data along with the logged-in user's email to Firestore
+      await FirebaseFirestore.instance.collection('orders').add({
+        'name': _nameController.text,
+        'location': _locationController.text,
+        'recycleWastePercentage': double.parse(_recycleWasteController.text),
+        'organicWastePercentage': double.parse(_organicWasteController.text),
+        'generalWastePercentage': double.parse(_generalWasteController.text),
+        'email': userEmail,  // Add user's email to Firestore
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Show success message and navigate back
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Request submitted successfully!')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to submit request: $e')),
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
