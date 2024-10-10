@@ -45,7 +45,7 @@ const RegisterDustbin = () => {
         <input type="text" name="name" placeholder="name" onChange={handleInputChange} required />
         <input type="text" name="phone" placeholder="phone" onChange={handleInputChange} required />
         <input type="text" name="NIC" placeholder="NIC" onChange={handleInputChange} required />
-        <input type="text" name="Password" placeholder="Password" onChange={handleInputChange} required />
+        <input type="text" name="password" placeholder="password" onChange={handleInputChange} required />
         <button type="submit">Submit</button>
       </form>
 
