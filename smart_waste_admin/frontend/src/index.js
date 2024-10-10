@@ -10,6 +10,7 @@ import CustomerManagement from './Customer/CustomerManagement';
 import MainDashboard from './Dashboard/MainDashboard';
 import RegisterDriver from './Driver/RegisterDriver';
 import DriverManagement from './Driver/DriverManagement';
+import BinDetails from './Dashboard/BinDetails';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +22,7 @@ root.render(
         <Route path='/MainDashboard' element={<MainDashboard />} />
         <Route path='/RegisterDriver' element={<RegisterDriver />} />
         <Route path='/DriverManagement' element={<DriverManagement />} />
+        <Route path='/BinDetails' element={<BinDetails />} />
     </Routes>
   </BrowserRouter>
 );
