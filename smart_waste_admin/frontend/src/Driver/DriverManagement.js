@@ -1,6 +1,6 @@
 // components/CustomerManagement.js
 import React, { useState } from 'react';
-import Sidebar from '../Customer/Sidebar';
+import Sidebar from '../Component/Sidebar';
 
 const CustomerManagement = () => {
   const [email, setEmail] = useState('');

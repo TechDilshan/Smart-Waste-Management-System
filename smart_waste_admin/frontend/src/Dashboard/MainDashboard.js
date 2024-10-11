@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // For navigation in react-router-dom v6
 import Modal from 'react-modal'; // For the modal
-import Sidebar from '../Customer/Sidebar';
+import Sidebar from '../Component/Sidebar';
 
 const CustomerManagement = () => {
   const navigate = useNavigate();  // Hook for navigation
@@ -94,13 +94,13 @@ const CustomerManagement = () => {
         <div style={styles.box} onClick={handleCreateTruck}>
           <h2>Add Truck</h2>
           <p>Create a new truck for the system</p>
-        </div>   
+        </div>
 
         {/* View Overall Bin */}
         <div style={styles.box} onClick={viewTotalBin}>
-          <h2>View Bin</h2>
+          <h2>Waste Details</h2>
           <p>View overall bin details</p>
-        </div>        
+        </div>
       </div>
     </div>
   );

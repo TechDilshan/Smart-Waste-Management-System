@@ -31,7 +31,7 @@ const RegisterDriver = () => {
       <Sidebar />
       <div style={{ padding: '20px', flexGrow: 1 }}>
         <div style={styles.formContainer}>
-          <h1 style={styles.heading}>Register Driver</h1>
+          <h1 style={styles.heading}>Register Truck</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             <input
               type="text"

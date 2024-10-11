@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // For navigation in react-router-dom v6
 import Modal from 'react-modal'; // For the modal
-import Sidebar from '../Customer/Sidebar';
+import Sidebar from '../Component/Sidebar';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'; // Import leaflet components
 import L from 'leaflet'; // Import leaflet for handling custom marker
 
