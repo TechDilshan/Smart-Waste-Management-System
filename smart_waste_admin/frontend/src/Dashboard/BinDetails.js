@@ -41,65 +41,107 @@ const WeightGraph = () => {
     return (
         <div style={{ display: 'flex' }}>
             {/* Sidebar */}
-            {/* <Sidebar /> */}
+            <Sidebar />
 
             <div style={{ padding: '20px', flexGrow: 1 }}>
                 <h1>Bin Details</h1>
 
-                {/* Create Dustbin Box */}
-                <div style={styles.box}>
-                    <h2>Waste Weight</h2>
-                    <p>Weight of the waste for last week</p>
-                    <ResponsiveContainer width="100%" height={400}>
-                        <LineChart data={weightData}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="date" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Line type="monotone" dataKey="weight" stroke="#8884d8" activeDot={{ r: 8 }} />
-                        </LineChart>
-                    </ResponsiveContainer>
+                <div style={{ width: '80%', display: 'inline' }}>
+                    <div style={styles.box}>
+
+                    </div>
+
+                    <div style={styles.box}>
+
+                    </div>
+
+                    <div style={styles.box}>
+
+                    </div>
+                </div><br></br>
+
+                <div style={styles.outerBox2}>
+                    {/* Waste weight Box */}
+                    <div style={styles.box1}>
+                        <h2>Waste Weight</h2>
+                        <p>Weight of the waste for last week</p>
+                        <ResponsiveContainer width="100%" height={200}>
+                            <LineChart data={weightData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="weight" stroke="#8884d8" activeDot={{ r: 8 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+
+                    {/* Waste weight Box */}
+                    <div style={styles.box1}>
+                        <h2>Waste Weight</h2>
+                        <p>Weight of the waste for last week</p>
+                        <ResponsiveContainer width="100%" height={200} display="inline">
+                            <LineChart data={weightData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="weight" stroke="#8884d8" activeDot={{ r: 8 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
 
-                {/* Create Driver Box */}
-                <div style={styles.box}>
-                    <h2>Waste Category</h2>
-                    <p>Categories of waste per day</p>
-                    <ResponsiveContainer width="100%" height={400}>
-                        <PieChart>
-                            <Pie
-                            data={wasteData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={150}
-                            fill="#8884d8"
-                            dataKey="value"
-                            >
-                            {wasteData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </div>                
+                <div style={styles.outerBox2}>
+                    {/* Waste categoryr Box */}
+                    <div style={styles.box1}>
+                        <h2>Waste Category</h2>
+                        <p>Categories of waste per day</p>
+                        <ResponsiveContainer width="100%" height={580}>
+                            <PieChart>
+                                <Pie
+                                data={wasteData}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                outerRadius={150}
+                                fill="#8884d8"
+                                dataKey="value"
+                                >
+                                {wasteData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div> 
+                </div>               
             </div>        
         </div>
     );
 };
 
 const styles = {
-    box: {
+    box2: {
         padding: '20px',
         margin: '10px',
         borderRadius: '10px',
         backgroundColor: '#f0f0f0',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         // cursor: 'pointer',
+        transition: 'transform 0.3s ease-in-out',
+        textAlign: 'center',
+        width: '100%',
+        display: 'inline-block',
+    },
+    outerBox2: {
+        padding: '20px',
+        margin: '10px',
         transition: 'transform 0.3s ease-in-out',
         textAlign: 'center',
         width: '40%',
