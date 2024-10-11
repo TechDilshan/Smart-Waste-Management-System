@@ -60,49 +60,14 @@ const CustomerManagement = () => {
     navigate('/RegisterDriver');  // Route for the create driver page
   };
 
-  // Function to open the modal for selecting a driver
-  const openSelectDriverModal = (order) => {
-    setSelectedOrder(order);
-    setIsModalOpen(true);
+  // Function to navigate to the Create truck page
+  const handleCreateTruck = () => {
+    navigate('/RegisterTruck');  // Route for the create driver page
   };
 
-  // Function to handle the driver selection
-  const handleSelectDriver = async () => {
-    if (!selectedDriver) {
-      alert('Please select a driver.');
-      return;
-    }
-
-    const orderUpdate = {
-      customerEmail: selectedOrder.email,
-      driverEmail: selectedDriver,
-      orderDetails: selectedOrder,
-      date: Date(),
-    };
-
-
-    console.log(orderUpdate);
-    try {
-      const response = await fetch('http://localhost:3001/api/dustbins/set-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderUpdate),
-      });
-
-      if (response.ok) {
-        alert('Driver assigned successfully!');
-        setIsModalOpen(false);
-        setSelectedOrder(null);
-        setSelectedDriver(null);
-        // Optionally refetch orders after assigning driver
-      } else {
-        console.error('Failed to assign driver');
-      }
-    } catch (error) {
-      console.error('Error assigning driver:', error);
-    }
+  // Function to navigate to the Create truck page
+  const viewTotalBin = () => {
+    navigate('/BinDetails');  // Route for the create driver page
   };
 
   return (
@@ -115,90 +80,44 @@ const CustomerManagement = () => {
 
         {/* Create Dustbin Box */}
         <div style={styles.box} onClick={handleCreateDustbin}>
-          <h2>Create Dustbin</h2>
+          <h2>Add Dustbin</h2>
           <p>Create a new dustbin for the system</p>
         </div>
 
         {/* Create Driver Box */}
         <div style={styles.box} onClick={handleCreateDriver}>
-          <h2>Create Driver</h2>
+          <h2>Add Driver</h2>
           <p>Create a new driver for the system</p>
         </div>
 
-        {/* Orders Grid Section */}
-        {/* <div style={{ marginTop: '20px' }}>
-          <h2>Customer Orders</h2>
-          {loading ? (
-            <p>Loading orders...</p>
-          ) : (
-            <div style={styles.gridContainer}>
-              {orders.length > 0 ? (
-                orders.map((order) => (
-                  <div key={order.id} style={styles.orderCard}>
-                    <h3>Customer Name: {order.name}</h3>
-                    <p><strong>Customer Email:</strong> {order.email}</p>
-                    <p><strong>Location:</strong> {order.location}</p>
-                    <p><strong>Recycle Waste %:</strong> {order.recycleWastePercentage}</p>
-                    <p><strong>Organic Waste %:</strong> {order.organicWastePercentage}</p>
-                    <p><strong>General Waste %:</strong> {order.generalWastePercentage}</p>
+        {/* Create Truck Box */}
+        <div style={styles.box} onClick={handleCreateTruck}>
+          <h2>Add Truck</h2>
+          <p>Create a new truck for the system</p>
+        </div>   
 
-                    <p><strong>Date:</strong> {new Date(order.date).toLocaleString()}</p>
-                    <button onClick={() => openSelectDriverModal(order)}>Select Driver</button>
-                  </div>
-                ))
-              ) : (
-                <p>No orders found.</p>
-              )}
-            </div>
-          )}
-        </div> */}
+        {/* View Overall Bin */}
+        <div style={styles.box} onClick={viewTotalBin}>
+          <h2>View Bin</h2>
+          <p>View overall bin details</p>
+        </div>        
       </div>
-
-      {/* Modal for Driver Selection */}
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} ariaHideApp={false}>
-          <h2>Select a Driver</h2>
-          {drivers.length > 0 ? (
-            <ul>
-              {drivers.map((driver) => (
-                <li key={driver.email}>
-                  <label>
-                    <input
-                      type="radio"
-                      name="driver"
-                      value={driver.email}
-                      onChange={() => setSelectedDriver(driver.email)}
-                      checked={selectedDriver === driver.email}
-                    />
-                    {driver.name} ({driver.email})
-                  </label>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No drivers available</p>
-          )}
-          <button onClick={handleSelectDriver} disabled={!selectedDriver}>
-            Confirm Selection
-          </button>
-          <button onClick={() => setIsModalOpen(false)}>Cancel</button>
-        </Modal>
-      )}
     </div>
   );
 };
 
 const styles = {
   box: {
-    padding: '20px',
-    margin: '10px 0',
+    padding: '40px',
+    margin: '10px',
     borderRadius: '10px',
     backgroundColor: '#f0f0f0',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     cursor: 'pointer',
     transition: 'transform 0.3s ease-in-out',
     textAlign: 'center',
-    width: '250px',
+    width: '40%',
+    display: 'inline-block',
   },
   gridContainer: {
     display: 'grid',
