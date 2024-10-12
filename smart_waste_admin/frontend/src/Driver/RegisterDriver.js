@@ -75,7 +75,7 @@ const RegisterDriver = () => {
             />
             <input
               type="password"
-              name="password"
+              name="Password"
               placeholder="Password"
               onChange={handleInputChange}
               required
