@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../Component/Sidebar';
-import Modal from 'react-modal'; // Optional, if using react-modal
+import Modal from 'react-modal';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CustomerManagement = () => {
   const [email, setEmail] = useState('');
@@ -63,7 +67,7 @@ const CustomerManagement = () => {
       date: currentDate
     };
 
-    console.log(selectedOrder)
+    console.log(selectedOrder);
 
     try {
       const response = await fetch('http://localhost:3001/api/dustbins/set-order', {
@@ -91,6 +95,18 @@ const CustomerManagement = () => {
     const date = new Date(timestamp.seconds * 1000);
     return date.toLocaleString();
   };
+
+  const createPieData = (filledPercentage) => ({
+    labels: ['Filled', 'Empty'],
+    datasets: [
+      {
+        label: 'Waste',
+        data: [filledPercentage, 100 - filledPercentage],
+        backgroundColor: ['#FF6384', '#36A2EB'],
+        hoverBackgroundColor: ['#FF6384', '#36A2EB'],
+      },
+    ],
+  });
 
   useEffect(() => {
     fetchDrivers();
@@ -123,8 +139,17 @@ const CustomerManagement = () => {
 
         {/* Display User Details */}
         {userDetails && (
-          <div style={{ marginTop: '20px' }}>
-            <h2>User Details</h2>
+          <div style={{
+            marginTop: '20px',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '10px',
+            border: '1px solid #ccc',
+            padding: '10px',
+            borderRadius: '5px',
+            backgroundColor: '#f0f0f0'
+          }}>
+            <h2 style={{ gridColumn: 'span 3' }}>User Details</h2>
             <p><strong>Email:</strong> {userDetails.email}</p>
             <p><strong>Location:</strong> {userDetails.location}</p>
             <p><strong>Name:</strong> {userDetails.name}</p>
@@ -136,20 +161,63 @@ const CustomerManagement = () => {
 
         {/* Display Order Details */}
         {orderDetails && (
-          <div style={{ marginTop: '20px' }}>
+          <div style={{
+            marginTop: '20px',
+            border: '1px solid #ccc',
+            padding: '10px',
+            borderRadius: '5px',
+            backgroundColor: '#f0f0f0'
+          }}>
             <h2>Order Details</h2>
-            <p><strong>Location:</strong> {orderDetails.location}</p>
+            <p><strong>Location:</strong> Latitude {orderDetails.location.latitude}, Longitude {orderDetails.location.longitude}</p>
             <p><strong>Name:</strong> {orderDetails.name}</p>
             <p><strong>Timestamp:</strong> {formatTimestamp(orderDetails.timestamp)}</p>
-            <p><strong>Recycle Waste %:</strong> {orderDetails.recycleWastePercentage}</p>
-            <p><strong>Organic Waste %:</strong> {orderDetails.organicWastePercentage}</p>
-            <p><strong>General Waste %:</strong> {orderDetails.generalWastePercentage}</p>
-            
-            {/* Select Driver Button */}
-            <button onClick={() => setIsModalOpen(true)} style={{ marginTop: '10px' }}>
-              Select Driver
-            </button>
           </div>
+        )}
+
+        {/* Display Waste Details in Separate Boxes */}
+        {orderDetails && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '20px',
+            marginTop: '20px'
+          }}>
+            <div style={{
+              border: '1px solid #ccc',
+              padding: '10px',
+              borderRadius: '5px',
+              backgroundColor: '#f0f0f0'
+            }}>
+              <h3>Recycle Waste</h3>
+              <Pie data={createPieData(orderDetails.recycleWastePercentage)} />
+            </div>
+            <div style={{
+              border: '1px solid #ccc',
+              padding: '10px',
+              borderRadius: '5px',
+              backgroundColor: '#f0f0f0'
+            }}>
+              <h3>Organic Waste</h3>
+              <Pie data={createPieData(orderDetails.organicWastePercentage)} />
+            </div>
+            <div style={{
+              border: '1px solid #ccc',
+              padding: '10px',
+              borderRadius: '5px',
+              backgroundColor: '#f0f0f0'
+            }}>
+              <h3>General Waste</h3>
+              <Pie data={createPieData(orderDetails.generalWastePercentage)} />
+            </div>
+          </div>
+        )}
+
+        {/* Select Driver Button */}
+        {orderDetails && (
+          <button onClick={() => setIsModalOpen(true)} style={{ marginTop: '10px' }}>
+            Select Driver
+          </button>
         )}
 
         {/* Modal for Driver Selection */}

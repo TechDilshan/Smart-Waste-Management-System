@@ -43,50 +43,56 @@ const RegisterDustbin = () => {
         <div style={styles.formContainer}>
           <h1 style={styles.heading}>Register Smart Dustbin</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
+            <label style={styles.label}>Email</label>
             <input
               type="text"
               name="email"
-              placeholder="Email"
+              placeholder="Enter Email"
               onChange={handleInputChange}
               required
               style={styles.input}
             />
+            <label style={styles.label}>Location</label>
             <input
               type="text"
               name="location"
-              placeholder="Location"
+              placeholder="Enter Location"
               onChange={handleInputChange}
               required
               style={styles.input}
             />
+            <label style={styles.label}>Name</label>
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Enter Name"
               onChange={handleInputChange}
               required
               style={styles.input}
             />
+            <label style={styles.label}>Phone</label>
             <input
               type="text"
               name="phone"
-              placeholder="Phone"
+              placeholder="Enter Phone"
               onChange={handleInputChange}
               required
               style={styles.input}
             />
+            <label style={styles.label}>NIC</label>
             <input
               type="text"
               name="NIC"
-              placeholder="NIC"
+              placeholder="Enter NIC"
               onChange={handleInputChange}
               required
               style={styles.input}
             />
+            <label style={styles.label}>Password</label>
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="Enter Password"
               onChange={handleInputChange}
               required
               style={styles.input}
@@ -132,7 +138,13 @@ const styles = {
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '15px',
+    gap: '8px',
+  },
+  label: {
+    textAlign: 'left',
+    // marginBottom: '1px', // Decreased gap between label and input field
+    fontSize: '18px',
+    color: '#555',
   },
   input: {
     padding: '10px',
