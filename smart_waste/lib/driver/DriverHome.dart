@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart'; // For handling geographic coordinates
 import 'MyOrders.dart'; // Import MyOrders.dart
 import 'QRScannerPage.dart'; // Import QRScannerPage.dart
+import '../login.dart'; // Import your LoginPage here
 
 class DriverHome extends StatelessWidget {
   final String driverEmail; // Pass email to the home page
@@ -16,6 +17,14 @@ class DriverHome extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Driver Home'),
         backgroundColor: Colors.green,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              _showLogoutDialog(context); // Show logout confirmation dialog
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -90,6 +99,43 @@ class DriverHome extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // Method to show logout confirmation dialog
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Call the logout method
+                _logout(context);
+              },
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Logout method
+  void _logout(BuildContext context) {
+    // Clear any session data here, if applicable.
+    // For example: AuthService().logout();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to login page
     );
   }
 }
