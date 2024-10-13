@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart'; // For handling geographic coordinates
 import 'MyOrders.dart'; // Import MyOrders.dart
@@ -15,7 +15,7 @@ class DriverHome extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Driver Home'),
-        backgroundColor: Colors.deepPurple, // Customize the app bar color
+        backgroundColor: Colors.green,
       ),
       body: Column(
         children: [
@@ -24,9 +24,11 @@ class DriverHome extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           // My Orders Box
-          InkWell(
-            onTap: () {
-              // Navigate to MyOrders page
+          _buildNavigationButton(
+            context,
+            'My Orders',
+            Icons.list,
+            () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -34,29 +36,14 @@ class DriverHome extends StatelessWidget {
                 ),
               );
             },
-            child: Container(
-              width: 200,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.deepPurple,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Text(
-                  'My Orders',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
           ),
           const SizedBox(height: 20),
           // Scan QR Code Box
-          InkWell(
-            onTap: () {
-              // Navigate to QRScannerPage
+          _buildNavigationButton(
+            context,
+            'QR Scan',
+            Icons.qr_code_scanner,
+            () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -64,26 +51,44 @@ class DriverHome extends StatelessWidget {
                 ),
               );
             },
-            child: Container(
-              width: 200,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.deepPurple,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Text(
-                  'Scan QR Code',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
           ),
           const SizedBox(height: 20),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNavigationButton(BuildContext context, String title, IconData icon, VoidCallback onTap) {
+    return Card(
+      elevation: 5,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          width: 200,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.green.shade600, Colors.green.shade500],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -129,59 +134,109 @@ class _DriverLocationMapState extends State<DriverLocationMap> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(child: CircularProgressIndicator()) // Display loading indicator while fetching
-        : FlutterMap(
-            options: MapOptions(
-              center: LatLng(6.927079, 79.861244), // Default center: Coordinates of Sri Lanka
-              zoom: 12.0,
+        : Container(
+            margin: const EdgeInsets.all(10), // Add margin around the map
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 5), // Shadow position
+                ),
+              ],
             ),
-            children: [
-              TileLayer(
-                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c'],
-                additionalOptions: {
-                  'attribution': '© OpenStreetMap contributors',
-                },
+            child: FlutterMap(
+              options: MapOptions(
+                center: LatLng(6.927079, 79.861244), // Default center: Coordinates of Sri Lanka
+                zoom: 12.0,
               ),
-              MarkerLayer(
-                markers: _orders.map((order) {
-                  // Safe check for order data
-                  if (order.exists) {
-                    final data = order.data() as Map<String, dynamic>?;
+              children: [
+                TileLayer(
+                  urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  subdomains: ['a', 'b', 'c'],
+                  additionalOptions: {
+                    'attribution': '© OpenStreetMap contributors',
+                  },
+                ),
+                MarkerLayer(
+                  markers: _orders.map((order) {
+                    if (order.exists) {
+                      final data = order.data() as Map<String, dynamic>?;
 
-                    if (data != null) {
-                      // Ensure 'orderDetails' is a Map
-                      if (data['orderDetails'] is Map<String, dynamic>) {
-                        final orderDetails = data['orderDetails'] as Map<String, dynamic>;
+                      if (data != null) {
+                        if (data['orderDetails'] is Map<String, dynamic>) {
+                          final orderDetails = data['orderDetails'] as Map<String, dynamic>;
 
-                        // Ensure 'location' is a Map
-                        if (orderDetails['location'] is Map<String, dynamic>) {
-                          final location = orderDetails['location'] as Map<String, dynamic>;
+                          if (orderDetails['location'] is Map<String, dynamic>) {
+                            final location = orderDetails['location'] as Map<String, dynamic>;
 
-                          // Get latitude and longitude
-                          final lat = location['latitude'] as double?;
-                          final lon = location['longitude'] as double?;
+                            final lat = location['latitude'] as double?;
+                            final lon = location['longitude'] as double?;
 
-                          if (lat != null && lon != null) {
-                            print('Latitude: $lat, Longitude: $lon'); // Debug print
-                            return Marker(
-                              point: LatLng(lat, lon),
-                              width: 40.0,
-                              height: 40.0,
-                              builder: (ctx) => const Icon(
-                                Icons.location_on,
-                                color: Colors.red,
-                                size: 40,
-                              ),
-                            );
+                            if (lat != null && lon != null) {
+                              return Marker(
+                                point: LatLng(lat, lon),
+                                width: 40.0,
+                                height: 40.0,
+                                builder: (ctx) => GestureDetector(
+                                  onTap: () => _showOrderDetails(context, orderDetails),
+                                  child: const Icon(
+                                    Icons.location_on,
+                                    color: Colors.red,
+                                    size: 40,
+                                  ),
+                                ),
+                              );
+                            }
                           }
                         }
                       }
                     }
-                  }
-                  return null; // Skip if any value is missing
-                }).whereType<Marker>().toList(), // Filter out null values
-              ),
-            ],
+                    return null;
+                  }).whereType<Marker>().toList(),
+                ),
+              ],
+            ),
           );
+  }
+
+  void _showOrderDetails(BuildContext context, Map<String, dynamic> orderDetails) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Center( // Center the popup
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.4,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Order Details',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Text('Order Name: ${orderDetails['name'] ?? 'N/A'}'),
+                const SizedBox(height: 5),
+                Text('Customer Email Address: ${orderDetails['email'] ?? 'N/A'}'),
+                const SizedBox(height: 5),
+                Text('General Waste Weight: ${orderDetails['generalWasteWeight'] ?? 'N/A'}'),
+                const SizedBox(height: 5),
+                Text('Organic Waste Weight: ${orderDetails['organicWasteWeight'] ?? 'N/A'}'),
+                const SizedBox(height: 5),
+                Text('Recycle Waste Weight: ${orderDetails['recycleWasteWeight'] ?? 'N/A'}'),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
