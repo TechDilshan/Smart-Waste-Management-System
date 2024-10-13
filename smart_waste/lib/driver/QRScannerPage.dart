@@ -22,7 +22,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
         // Retrieve dustbin data from Firestore
         DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-            .collection('dustbins')
+            .collection('users')
             .doc(result!.rawValue)
             .get();
 

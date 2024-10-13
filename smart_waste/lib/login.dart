@@ -4,12 +4,10 @@ import 'signup.dart'; // Import the signup screen
 import './customer/CustomerHome.dart'; // Import the home screen
 import 'driver/driverLogin.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -22,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     setState(() {
-      _errorMessage = null; // Clear previous error message
+      _errorMessage = null;
     });
 
     try {
@@ -41,10 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
         password: password,
       );
 
-      // Navigate to the next screen after successful login
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => CustomerHome()), // Replace with your home screen
+        MaterialPageRoute(builder: (context) => CustomerHome()),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -70,12 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFA4F3F2),
-              Color(0xFF86A8E7),
-              Color(0xFF7F7FD5),
+              Color(0xFF4E9FCA),
+              Color(0xFF71C5E8),
+              Color(0xFF4E9FCA),
             ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: Center(
@@ -86,62 +83,97 @@ class _LoginScreenState extends State<LoginScreen> {
                 // App Logo
                 Image.asset(
                   'assets/logo.png', // Replace with your logo asset path
-                  height: 150,
+                  height: 130,
                 ),
                 const SizedBox(height: 40),
                 // Login Container
                 Container(
                   padding: const EdgeInsets.all(20),
-                  margin: const EdgeInsets.symmetric(horizontal: 20), // Add left and right margin
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.25),
+                    color: Colors.white.withOpacity(0.85),
                     borderRadius: BorderRadius.circular(15),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 4),
+                        blurRadius: 8,
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Login Topic
+                      // Login Header
                       const Text(
-                        'Login',
+                        'Welcome Back',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFF4E9FCA),
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Please login to your account',
+                        style: TextStyle(
+                          color: Color(0xFF4E9FCA),
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      // Email Input Field
                       // Email Input Field
                       TextField(
                         controller: _emailController,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: Colors.white.withOpacity(0.5),
+                          fillColor: Colors.white.withOpacity(0.2),
                           hintText: 'Email',
-                          prefixIcon: const Icon(Icons.email, color: Colors.white),
+                          prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF4E9FCA)), // Changed icon
+                          hintStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF4E9FCA), // Set your border color here
+                              width: 2, // Adjust the width if needed
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF4E9FCA), // Border color for enabled state
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF71C5E8), // Border color when focused
+                              width: 2,
+                            ),
                           ),
                         ),
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                         keyboardType: TextInputType.emailAddress,
                       ),
+
                       const SizedBox(height: 20),
+                      // Password Input Field
                       // Password Input Field
                       TextField(
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: Colors.white.withOpacity(0.5),
+                          fillColor: Colors.white.withOpacity(0.2),
                           hintText: 'Password',
-                          prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                          hintStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                          prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF4E9FCA)), // Changed icon
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.white,
+                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              color: Color(0xFF4E9FCA),
                             ),
                             onPressed: () {
                               setState(() {
@@ -150,17 +182,35 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF4E9FCA), // Set your border color here
+                              width: 2, // Adjust the width if needed
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF4E9FCA), // Border color for enabled state
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF71C5E8), // Border color when focused
+                              width: 2,
+                            ),
                           ),
                         ),
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                       ),
+
                       const SizedBox(height: 20),
                       // Error Message
                       if (_errorMessage != null)
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
+                          padding: const EdgeInsets.only(bottom: 15),
                           child: Text(
                             _errorMessage!,
                             style: const TextStyle(
@@ -175,16 +225,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 125, 44, 176),
+                            backgroundColor: const Color(0xFF4E9FCA), // Same color as DriverLoginScreen
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                             ),
+                            elevation: 5,
                           ),
                           child: const Text(
                             'Sign In',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 255, 255, 255),
                               fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -192,35 +245,35 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 20),
                       // SignUp Prompt
                       Center(
-                        child: TextButton(
-                          onPressed: () {
+                        child: GestureDetector(
+                          onTap: () {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => const SignUpScreen()),
                             );
                           },
                           child: const Text(
-                            "",
-                            style: TextStyle(color: Colors.white),
+                            "Don't have an account? Sign Up",
+                            style: TextStyle(color: Color(0xFF4E9FCA), fontSize: 16),
                           ),
                         ),
                       ),
-
+                      const SizedBox(height: 10),
+                      // Admin Login Option
                       Center(
-                        child: TextButton(
-                          onPressed: () {
+                        child: GestureDetector(
+                          onTap: () {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => const DriverLoginScreen()),
                             );
                           },
                           child: const Text(
-                            "Are you admin? Login",
-                            style: TextStyle(color: Colors.white),
+                            "Are you Driver? Login",
+                            style: TextStyle(color: Color(0xFF4E9FCA), fontSize: 16),
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
