@@ -12,10 +12,12 @@ class RequestPage extends StatefulWidget {
 class _RequestPageState extends State<RequestPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _recycleWasteController = TextEditingController();
-  final TextEditingController _organicWasteController = TextEditingController();
-  final TextEditingController _generalWasteController = TextEditingController();
-  
+
+  // Variables for waste weights
+  double _recycleWasteWeight = 1; // Minimum 1 kg
+  double _organicWasteWeight = 1; // Minimum 1 kg
+  double _generalWasteWeight = 1; // Minimum 1 kg
+
   // Variables for map location
   LatLng _selectedLocation = LatLng(6.9271, 79.8612); // Default location (Colombo)
   String _locationText = "Tap on map to select a location";
@@ -34,9 +36,9 @@ class _RequestPageState extends State<RequestPage> {
         // Add form data along with the logged-in user's email and the selected location to Firestore
         await FirebaseFirestore.instance.collection('orders').add({
           'name': _nameController.text,
-          'recycleWastePercentage': double.parse(_recycleWasteController.text),
-          'organicWastePercentage': double.parse(_organicWasteController.text),
-          'generalWastePercentage': double.parse(_generalWasteController.text),
+          'recycleWasteWeight': _recycleWasteWeight,
+          'organicWasteWeight': _organicWasteWeight,
+          'generalWasteWeight': _generalWasteWeight,
           'email': userEmail, // Add user's email to Firestore
           'location': {
             'latitude': _selectedLocation.latitude,
@@ -63,6 +65,7 @@ class _RequestPageState extends State<RequestPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Request Garbage Collection'),
+        backgroundColor: Colors.green[600],
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -72,7 +75,12 @@ class _RequestPageState extends State<RequestPage> {
             children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Enter your name'),
+                decoration: InputDecoration(
+                  labelText: 'Enter your name',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your name';
@@ -80,69 +88,86 @@ class _RequestPageState extends State<RequestPage> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _recycleWasteController,
-                decoration: InputDecoration(labelText: 'Enter Recycle Waste Percentage'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter recycle waste percentage';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _organicWasteController,
-                decoration: InputDecoration(labelText: 'Enter Organic Waste Percentage'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter organic waste percentage';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _generalWasteController,
-                decoration: InputDecoration(labelText: 'Enter General Waste Percentage'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter general waste percentage';
-                  }
-                  return null;
+              SizedBox(height: 20),
+
+              // Recycle Waste Slider
+              _buildWasteSlider(
+                'Recycle Waste (kg)',
+                _recycleWasteWeight,
+                (newValue) {
+                  setState(() {
+                    _recycleWasteWeight = newValue;
+                  });
                 },
               ),
               SizedBox(height: 20),
-              
+
+              // Organic Waste Slider
+              _buildWasteSlider(
+                'Organic Waste (kg)',
+                _organicWasteWeight,
+                (newValue) {
+                  setState(() {
+                    _organicWasteWeight = newValue;
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+
+              // General Waste Slider
+              _buildWasteSlider(
+                'General Waste (kg)',
+                _generalWasteWeight,
+                (newValue) {
+                  setState(() {
+                    _generalWasteWeight = newValue;
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+
               // Map section to select location
               Container(
                 height: 300,
-                child: FlutterMap(
-                  options: MapOptions(
-                    center: _selectedLocation, // The center of the map (initially set to Colombo)
-                    zoom: 13.0,
-                    onTap: (_, newLatLng) {
-                      setState(() {
-                        _selectedLocation = newLatLng;
-                        _locationText = "Location Selected: ${_selectedLocation.latitude}, ${_selectedLocation.longitude}";
-                      });
-                    },
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                      subdomains: ['a', 'b', 'c'],
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: _selectedLocation,
-                          builder: (ctx) => Icon(Icons.location_on, color: Colors.red, size: 40),
-                        ),
-                      ],
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
                     ),
                   ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: FlutterMap(
+                    options: MapOptions(
+                      center: _selectedLocation, // The center of the map (initially set to Colombo)
+                      zoom: 13.0,
+                      onTap: (_, newLatLng) {
+                        setState(() {
+                          _selectedLocation = newLatLng;
+                          _locationText = "Location Selected: ${_selectedLocation.latitude}, ${_selectedLocation.longitude}";
+                        });
+                      },
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        subdomains: ['a', 'b', 'c'],
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: _selectedLocation,
+                            builder: (ctx) => Icon(Icons.location_on, color: Colors.red, size: 40),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               
@@ -157,12 +182,41 @@ class _RequestPageState extends State<RequestPage> {
               // Submit Button
               ElevatedButton(
                 onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.green[600], // Text color
+                ),
                 child: Text('Submit Request'),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildWasteSlider(String label, double currentValue, ValueChanged<double> onChanged) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        Slider(
+          value: currentValue,
+          min: 1,
+          max: 10,
+          divisions: 9,
+          label: currentValue.round().toString() + ' kg',
+          onChanged: onChanged,
+          activeColor: const Color.fromARGB(255, 15, 84, 19), // Change this to your desired active color
+          inactiveColor: Colors.grey[300],
+        ),
+        Text(
+          'Weight: ${currentValue.toStringAsFixed(1)} kg',
+          style: TextStyle(fontSize: 16),
+        ),
+      ],
     );
   }
 }

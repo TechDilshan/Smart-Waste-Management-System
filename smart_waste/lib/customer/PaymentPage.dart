@@ -13,29 +13,61 @@ class _PaymentPageState extends State<PaymentPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _summaryController = TextEditingController();
 
+  // Variables for user data and loading state
+  Map<String, dynamic>? userData;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData(); // Fetch user data when the page loads
+  }
+
+  // Function to fetch user data from Firestore
+  Future<void> _fetchUserData() async {
+    String? userEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (userEmail != null) {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: userEmail)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          userData = snapshot.docs.first.data() as Map<String, dynamic>?;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   // Function to add a new payment to Firebase
   void _makePayment() async {
     if (_priceController.text.isNotEmpty &&
         _dateController.text.isNotEmpty &&
         _summaryController.text.isNotEmpty) {
-      // Get the logged-in user's email
       String userEmail = FirebaseAuth.instance.currentUser!.email!;
-
-      // Add payment details to Firestore
       await FirebaseFirestore.instance.collection('payments').add({
         'price': _priceController.text,
         'date': _dateController.text,
         'summary': _summaryController.text,
-        'userEmail': userEmail,  // Store the user's email with the payment
-        'timestamp': FieldValue.serverTimestamp(), // Add timestamp for ordering
+        'userEmail': userEmail,
+        'timestamp': FieldValue.serverTimestamp(),
       });
 
-      // Clear the input fields
       _priceController.clear();
       _dateController.clear();
       _summaryController.clear();
 
-      // Show a success message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Payment Submitted Successfully'),
         duration: Duration(seconds: 2),
@@ -50,97 +82,137 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the logged-in user's email
-    String userEmail = FirebaseAuth.instance.currentUser!.email!;
+    String userEmail = FirebaseAuth.instance.currentUser?.email ?? '';
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Payment Details'),
+        backgroundColor: Colors.green,
       ),
-      body: Column(
-        children: [
-          // "Make Payment" button
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                _makePayment();
-              },
-              child: Text('Make Payment'),
-            ),
-          ),
-          // Input fields for price, date, and summary
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TextField(
-                  controller: _priceController,
-                  decoration: InputDecoration(labelText: 'Enter Price'),
-                  keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _dateController,
-                  decoration: InputDecoration(labelText: 'Enter Date'),
-                  keyboardType: TextInputType.datetime,
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _summaryController,
-                  decoration: InputDecoration(labelText: 'Enter Summary'),
-                  maxLines: 3,
-                ),
-                SizedBox(height: 20),
-              ],
-            ),
-          ),
-          // Payment details list from Firebase (filtered by email)
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('payments')
-                  .where('userEmail', isEqualTo: userEmail)  // Filter by user's email
-                  .orderBy('timestamp', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.hasError) {
-                  return Center(child: Text('Something went wrong'));
-                }
-
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No payments found'));
-                }
-
-                // Display payments in a list
-                var paymentDocs = snapshot.data!.docs;
-                return ListView.builder(
-                  itemCount: paymentDocs.length,
-                  itemBuilder: (context, index) {
-                    var payment = paymentDocs[index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: ListTile(
-                        title: Text('Price: ${payment['price']}'),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Date: ${payment['date']}'),
-                            Text('Summary: ${payment['summary']}'),
-                          ],
-                        ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (userData != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        'Welcome, ${userData!['name'] ?? 'User'}',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                    );
-                  },
-                );
-              },
+                    ),
+                  // Input fields for price, date, and summary
+                  _buildInputField(_priceController, 'Enter Price', TextInputType.number),
+                  _buildInputField(
+                    _dateController,
+                    'Select Date',
+                    TextInputType.datetime,
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode()); // Dismiss the keyboard
+                      DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+
+                      if (selectedDate != null) {
+                        setState(() {
+                          _dateController.text = "${selectedDate.toLocal()}".split(' ')[0]; // Format the date as YYYY-MM-DD
+                        });
+                      }
+                    },
+                  ),
+                  _buildInputField(
+                    _summaryController,
+                    'Enter Summary',
+                    TextInputType.multiline,
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: 16),
+                  // "Make Payment" button at the bottom
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    onPressed: _makePayment,
+                    child: Text(
+                      'Make Payment',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  // Payment details list from Firebase (filtered by email)
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('payments')
+                          .where('userEmail', isEqualTo: userEmail)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                        if (snapshot.hasError) {
+                          return Center(child: Text('Something went wrong'));
+                        }
+
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return Center(child: Text('No payments found'));
+                        }
+
+                        var paymentDocs = snapshot.data!.docs;
+                        return ListView.builder(
+                          itemCount: paymentDocs.length,
+                          itemBuilder: (context, index) {
+                            var payment = paymentDocs[index];
+                            return Card(
+                              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              child: ListTile(
+                                title: Text('Price: ${payment['price']}'),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Date: ${payment['date']}'),
+                                    Text('Summary: ${payment['summary']}'),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
+    );
+  }
+
+  Widget _buildInputField(TextEditingController controller, String label, TextInputType keyboardType, {int maxLines = 1, VoidCallback? onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
           ),
-        ],
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey, width: 1.0),
+          ),
+        ),
+        keyboardType: keyboardType,
+        maxLines: maxLines,
+        onTap: onTap, // Trigger onTap event
       ),
     );
   }
