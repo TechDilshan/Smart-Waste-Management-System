@@ -133,10 +133,10 @@ const CustomerManagement = () => {
                     <p><strong>General Waste %:</strong> {order.generalWastePercentage}</p>
 
                     <p><strong>Date:</strong> {new Date(order.date).toLocaleString()}</p>
-                    <button onClick={() => openSelectDriverModal(order)}>Select Driver</button>
+                    <button style={styles.primaryButton} onClick={() => openSelectDriverModal(order)}>Select Driver</button>
 
                     {/* Display Map for Location */}
-                    {order.location ? (
+                    {order.location && !isModalOpen ? (
                       <MapContainer
                         center={[order.location.latitude, order.location.longitude]}
                         zoom={13}
@@ -174,7 +174,12 @@ const CustomerManagement = () => {
 
       {/* Modal for Driver Selection */}
       {isModalOpen && (
-        <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} ariaHideApp={false}>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          ariaHideApp={false}
+          style={styles.modalStyles}
+        >
           <h2>Select a Driver</h2>
           {drivers.length > 0 ? (
             <ul>
@@ -196,10 +201,12 @@ const CustomerManagement = () => {
           ) : (
             <p>No drivers available</p>
           )}
-          <button onClick={handleSelectDriver} disabled={!selectedDriver}>
-            Confirm Selection
-          </button>
-          <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+          <div style={styles.modalButtonContainer}>
+            <button style={styles.primaryButton} onClick={handleSelectDriver} disabled={!selectedDriver}>
+              Confirm Selection
+            </button>
+            <button style={styles.secondaryButton} onClick={() => setIsModalOpen(false)}>Cancel</button>
+          </div>
         </Modal>
       )}
     </div>
@@ -229,7 +236,47 @@ const styles = {
     borderRadius: '10px',
     backgroundColor: '#f0f0f0',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    textAlign: 'center',
+  },
+  primaryButton: {
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+    marginTop: '10px',
+  },
+  secondaryButton: {
+    padding: '10px 20px',
+    backgroundColor: '#6c757d',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+    marginTop: '10px',
+    marginLeft: '10px',
+  },
+  modalStyles: {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      width: '500px',
+      backgroundColor: '#fff',
+      padding: '20px',
+      borderRadius: '10px',
+      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+    },
+  },
+  modalButtonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: '20px',
   },
 };
 
