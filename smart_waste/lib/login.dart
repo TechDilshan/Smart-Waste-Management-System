@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'signup.dart'; // Import the signup screen
 import './customer/CustomerHome.dart'; // Import the home screen
 import 'driver/driverLogin.dart';
 
@@ -67,9 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF4E9FCA),
-              Color(0xFF71C5E8),
-              Color(0xFF4E9FCA),
+              Colors.green,
+              Colors.green,
+              Colors.green,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -83,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // App Logo
                 Image.asset(
                   'assets/logo.png', // Replace with your logo asset path
-                  height: 130,
+                  height: 200,
                 ),
                 const SizedBox(height: 40),
                 // Login Container
@@ -108,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text(
                         'Welcome Back',
                         style: TextStyle(
-                          color: Color(0xFF4E9FCA),
+                          color: Color.fromARGB(255, 0, 0, 0),
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
@@ -117,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text(
                         'Please login to your account',
                         style: TextStyle(
-                          color: Color(0xFF4E9FCA),
+                          color: Color.fromARGB(255, 0, 0, 0),
                           fontSize: 16,
                         ),
                       ),
@@ -130,26 +129,26 @@ class _LoginScreenState extends State<LoginScreen> {
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.2),
                           hintText: 'Email',
-                          prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF4E9FCA)), // Changed icon
+                          prefixIcon: const Icon(Icons.email_outlined, color: Colors.green), // Changed icon
                           hintStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: Color(0xFF4E9FCA), // Set your border color here
+                              color: Colors.green, // Set your border color here
                               width: 2, // Adjust the width if needed
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: Color(0xFF4E9FCA), // Border color for enabled state
+                              color: Colors.green, // Border color for enabled state
                               width: 2,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: Color(0xFF71C5E8), // Border color when focused
+                              color: Colors.green, // Border color when focused
                               width: 2,
                             ),
                           ),
@@ -169,11 +168,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           fillColor: Colors.white.withOpacity(0.2),
                           hintText: 'Password',
                           hintStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                          prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF4E9FCA)), // Changed icon
+                          prefixIcon: const Icon(Icons.lock_outline, color: Colors.green), // Changed icon
                           suffixIcon: IconButton(
                             icon: Icon(
                               _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                              color: Color(0xFF4E9FCA),
+                              color: Colors.green,
                             ),
                             onPressed: () {
                               setState(() {
@@ -184,21 +183,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: Color(0xFF4E9FCA), // Set your border color here
+                              color: Colors.green, // Set your border color here
                               width: 2, // Adjust the width if needed
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: Color(0xFF4E9FCA), // Border color for enabled state
+                              color: Colors.green, // Border color for enabled state
                               width: 2,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: Color(0xFF71C5E8), // Border color when focused
+                              color: Colors.green, // Border color when focused
                               width: 2,
                             ),
                           ),
@@ -225,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4E9FCA), // Same color as DriverLoginScreen
+                            backgroundColor: const Color.fromARGB(255, 9, 155, 9), // Same color as DriverLoginScreen
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -242,22 +241,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      // SignUp Prompt
-                      Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                            );
-                          },
-                          child: const Text(
-                            "Don't have an account? Sign Up",
-                            style: TextStyle(color: Color(0xFF4E9FCA), fontSize: 16),
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 10),
                       // Admin Login Option
                       Center(
@@ -270,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: const Text(
                             "Are you Driver? Login",
-                            style: TextStyle(color: Color(0xFF4E9FCA), fontSize: 16),
+                            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 16),
                           ),
                         ),
                       ),

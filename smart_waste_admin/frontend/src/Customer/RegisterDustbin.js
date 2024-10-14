@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import QRCode from 'react-qr-code';
 import Sidebar from '../Component/Sidebar';
 
@@ -33,6 +33,27 @@ const RegisterDustbin = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
     }
+  };
+
+  const qrRef = useRef(null);
+
+  const downloadQRCode = () => {
+    const svg = qrRef.current.querySelector('svg');
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      const pngFile = canvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a");
+      downloadLink.download = "qr-code.png";
+      downloadLink.href = pngFile;
+      downloadLink.click();
+    };
+    img.src = "data:image/svg+xml;base64," + btoa(svgData);
   };
 
   return (
@@ -101,9 +122,14 @@ const RegisterDustbin = () => {
           </form>
 
           {qrValue && (
-            <div style={styles.qrContainer}>
+            <div style={styles.qrContainer} ref={qrRef}>
               <h2 style={styles.qrHeading}>QR Code for Dustbin</h2>
-              <QRCode value={qrValue} />
+              <div style={styles.qrWrapper}>
+                <QRCode value={qrValue} />
+              </div>
+              <button onClick={downloadQRCode} style={styles.downloadButton}>
+                Download QR Code
+              </button>
             </div>
           )}
         </div>
@@ -167,10 +193,27 @@ const styles = {
   },
   qrContainer: {
     marginTop: '30px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  qrWrapper: {
+    marginBottom: '15px',
   },
   qrHeading: {
     fontSize: '18px',
-    marginBottom: '10px',
+    marginBottom: '15px',
+  },
+  downloadButton: {
+    marginTop: '10px',
+    padding: '10px 20px',
+    borderRadius: '5px',
+    backgroundColor: '#28a745',
+    color: '#fff',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '16px',
+    transition: 'background-color 0.3s',
   },
 };
 

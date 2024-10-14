@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../signup.dart'; // Import the signup screen
 import 'DriverHome.dart';
 import '../login.dart'; // Import the user login screen
 
@@ -80,9 +79,9 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF4E9FCA),
-              Color(0xFF71C5E8),
-              Color(0xFF4E9FCA),
+              Colors.green,
+              Colors.green,
+              Colors.green,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -96,7 +95,7 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                 // App Logo
                 Image.asset(
                   'assets/logo.png', // Replace with your logo asset path
-                  height: 150,
+                  height: 200,
                 ),
                 const SizedBox(height: 50),
                 // Login Container
@@ -121,7 +120,7 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                       const Text(
                         'Driver Login',
                         style: TextStyle(
-                          color: Color(0xFF4E9FCA),
+                          color: Color.fromARGB(255, 0, 0, 0),
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
@@ -161,7 +160,7 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4E9FCA),
+                            backgroundColor: const Color.fromARGB(255, 9, 155, 9), // Same color as DriverLoginScreen
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -182,26 +181,12 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                            );
-                          },
-                          child: const Text(
-                            "Don't have an account? Sign Up",
-                            style: TextStyle(color: Color(0xFF4E9FCA)),
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
                               MaterialPageRoute(builder: (context) => const LoginScreen()),
                             );
                           },
                           child: const Text(
                             "Are you a User? Login",
-                            style: TextStyle(color: Color(0xFF4E9FCA)),
+                            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           ),
                         ),
                       ),
@@ -230,12 +215,12 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
         filled: true,
         fillColor: Colors.white.withOpacity(0.6),
         hintText: hintText,
-        prefixIcon: Icon(icon, color: Color(0xFF4E9FCA)),
+        prefixIcon: Icon(icon, color: Colors.green),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
                   _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Color(0xFF4E9FCA),
+                  color: Colors.green,
                 ),
                 onPressed: () {
                   setState(() {
@@ -246,14 +231,14 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
             : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF4E9FCA), width: 2),
+          borderSide: const BorderSide(color: Colors.green, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF4E9FCA), width: 2),
+          borderSide: const BorderSide(color: Colors.green, width: 2),
         ),
       ),
-      style: const TextStyle(color: Colors.black),
+      style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
     );
   }
 }
