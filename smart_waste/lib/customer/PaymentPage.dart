@@ -80,6 +80,15 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
+  // Function to delete a payment by document ID
+  void _deletePayment(String paymentId) async {
+    await FirebaseFirestore.instance.collection('payments').doc(paymentId).delete();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Payment Deleted'),
+      duration: Duration(seconds: 2),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     String userEmail = FirebaseAuth.instance.currentUser?.email ?? '';
@@ -181,6 +190,12 @@ class _PaymentPageState extends State<PaymentPage> {
                                     Text('Date: ${payment['date']}'),
                                     Text('Summary: ${payment['summary']}'),
                                   ],
+                                ),
+                                trailing: IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.black),
+                                  onPressed: () {
+                                    _deletePayment(payment.id);
+                                  },
                                 ),
                               ),
                             );
